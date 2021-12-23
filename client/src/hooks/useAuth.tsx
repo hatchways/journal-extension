@@ -31,16 +31,12 @@ function useProvideAuth() {
   const [user, setUser] = useState(null);
 
   const login = async (email: string, password: string) => {
-    try {
-      const resp = await axios.post("/api/login", { email, password });
-      if (resp.data.error) return resp.data.error;
-      if (resp.data.token) {
-        await localStorage.setItem("token", resp.data.token);
-      }
-      validateAuthToken();
-    } catch (error) {
-      console.error("Error logging in", error);
+    const resp = await axios.post("/api/login", { email, password });
+    if (resp.data.error) return resp.data.error;
+    if (resp.data.token) {
+      await localStorage.setItem("token", resp.data.token);
     }
+    validateAuthToken();
   };
 
   const signup = async (
@@ -48,21 +44,16 @@ function useProvideAuth() {
     password: string,
     hatchwaysId: string,
   ) => {
-    try {
-      const resp = await axios.post("/api/users", {
-        email,
-        password,
-        hatchwaysId,
-      });
-      if (resp.data.error) return resp.data.error;
-      if (resp.data.user && resp.data.token) {
-        setUser(resp.data.user);
-        await localStorage.setItem("token", resp.data.token);
-        return null;
-      }
-    } catch (error) {
-      console.error(error);
-      return error;
+    const resp = await axios.post("/api/users", {
+      email,
+      password,
+      hatchwaysId,
+    });
+    if (resp.data.error) return resp.data.error;
+    if (resp.data.user && resp.data.token) {
+      setUser(resp.data.user);
+      await localStorage.setItem("token", resp.data.token);
+      return null;
     }
   };
 
