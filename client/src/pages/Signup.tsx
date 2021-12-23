@@ -11,13 +11,12 @@ const Signup = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    hatchwaysId: "",
     error: "",
   });
 
   const handleSignup = async () => {
     try {
-      await signup(state.email, state.password, state.hatchwaysId);
+      await signup(state.email, state.password);
       navigate("/");
     } catch (error) {
       setState((prev) => ({
@@ -60,17 +59,6 @@ const Signup = () => {
             type="text"
             onChange={handleChange}
             required
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            fullWidth
-            label="Hatchways Id (optional)"
-            variant="outlined"
-            name="hatchwaysId"
-            value={state.hatchwaysId || ""}
-            type="text"
-            onChange={handleChange}
           />
         </Grid>
         <Grid item>

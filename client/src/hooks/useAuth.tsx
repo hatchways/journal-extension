@@ -11,7 +11,7 @@ import { User } from "../types/user";
 interface AuthContextType {
   user: User;
   login: (username: string, password: string) => {};
-  signup: (email: string, password: string, hatchwaysId: string) => {};
+  signup: (email: string, password: string) => {};
   logout: () => {};
   validateAuthToken: () => {};
 }
@@ -39,15 +39,10 @@ function useProvideAuth() {
     validateAuthToken();
   };
 
-  const signup = async (
-    email: string,
-    password: string,
-    hatchwaysId: string,
-  ) => {
+  const signup = async (email: string, password: string) => {
     const resp = await axios.post("/api/users", {
       email,
       password,
-      hatchwaysId,
     });
     if (resp.data.error) return resp.data.error;
     if (resp.data.user && resp.data.token) {
