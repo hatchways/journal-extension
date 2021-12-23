@@ -2,6 +2,7 @@ import * as z from "zod";
 
 import { JournalEntryModel } from "../models/journal-entry";
 import { Router } from "express";
+import { importHatchwaysApplications } from "../lib/hatchways";
 
 export const journalEntriesRouter = Router();
 
@@ -11,6 +12,7 @@ journalEntriesRouter.get("/", async (req, res, next) => {
     if (userId === undefined) {
       return res.sendStatus(401);
     }
+    await importHatchwaysApplications(userId);
     const entries = await JournalEntryModel.find({ user: userId }).exec();
     res.send({
       journalEntries: entries,
@@ -46,6 +48,7 @@ const createJournalEntrySchema = z.object({
   notes: z.string(),
   details: z.string().optional(),
   followUpDate: z.string().optional(),
+  hatchwaysApplicationId: z.string().optional(),
   contacts: contactSchema.array(),
 });
 

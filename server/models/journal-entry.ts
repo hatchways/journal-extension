@@ -26,6 +26,7 @@ export type JournalEntry = {
   notes: string;
   details?: string;
   followUpDate?: Date;
+  hatchwaysApplicationId?: string;
   contacts: Contact[];
 };
 
@@ -89,6 +90,10 @@ const journalEntrySchema = new mongoose.Schema<JournalEntry>({
   },
   followUpDate: {
     type: Date,
+    required: false,
+  },
+  hatchwaysApplicationId: {
+    type: String,
     required: false,
   },
   contacts: [contactSchema],
