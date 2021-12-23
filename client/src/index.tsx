@@ -8,16 +8,23 @@ import AuthProvider from "./hooks/useAuth";
 import { BrowserRouter } from "react-router-dom";
 import { MuiThemeProvider } from "@material-ui/core";
 import { theme } from "./themes/theme";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import { SnackBarProvider } from "./hooks/useSnackbar";
 
 ReactDOM.render(
-  <AuthProvider>
-    <MuiThemeProvider theme={theme}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </MuiThemeProvider>
-  </AuthProvider>,
-  document.getElementById("root"),
+	<AuthProvider>
+		<SnackBarProvider>
+			<MuiThemeProvider theme={theme}>
+				<MuiPickersUtilsProvider utils={DateFnsUtils}>
+					<BrowserRouter>
+						<App />
+					</BrowserRouter>
+				</MuiPickersUtilsProvider>
+			</MuiThemeProvider>
+		</SnackBarProvider>
+	</AuthProvider>,
+	document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
