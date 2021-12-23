@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 export type User = {
   email: string;
   passwordHash: string;
-  hatchwaysId?: string;
 };
 
 const userSchema = new mongoose.Schema<User>({
@@ -15,10 +14,6 @@ const userSchema = new mongoose.Schema<User>({
   passwordHash: {
     type: String,
     required: true,
-  },
-  hatchwaysId: {
-    type: String,
-    required: false,
   },
 });
 
