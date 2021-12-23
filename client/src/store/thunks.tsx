@@ -1,3 +1,4 @@
+import { JournalEntry } from "./journalEntries";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const signup = createAsyncThunk(
@@ -56,3 +57,41 @@ export const fetchUser = createAsyncThunk("user/fetch", async () => {
   }
   return parsed.id;
 });
+
+export const fetchJournalEntries = createAsyncThunk(
+  "journal-entry/fetch",
+  async () => {
+    const token = localStorage.getItem("token");
+    if (token === null) {
+      return undefined;
+    }
+    const response = await fetch("/api/journal-entries", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const parsed = await response.json();
+    if (!parsed.journalEntries) {
+      throw new Error("Failed to fetch journal entries.");
+    }
+    return parsed.journalEntries;
+  }
+);
+
+export const createJournalEntry = createAsyncThunk(
+  "journal-entry/create",
+  async (payload: JournalEntry) => {
+    const token = localStorage.getItem("token");
+    if (token === null) {
+      return undefined;
+    }
+    const response = await fetch("/api/journal-entries", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const parsed = await response.json();
+    return parsed.journalEntry;
+  }
+);

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { fetchJournalEntries, fetchUser } from "./store/thunks";
 import { store, useAppDispatch } from "./store";
 
 import Dashboard from "./pages/Dashboard";
@@ -8,12 +9,12 @@ import Login from "./pages/Login";
 import MainLayout from "./common/MainLayout";
 import { Provider } from "react-redux";
 import Signup from "./pages/Signup";
-import { fetchUser } from "./store/thunks";
 
 function AutoLogin(): React.ReactElement {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchUser());
+    dispatch(fetchJournalEntries());
   }, [dispatch]);
 
   return <></>;

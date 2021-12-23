@@ -11,12 +11,12 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 
-import { JobEntry } from "../types/entry";
+import { JournalEntry } from "../store/journalEntries";
 import { STATUS_TYPE } from "../constants/constants";
 import { makeStyles } from "@material-ui/core/styles";
 
 interface Props {
-  entry: JobEntry;
+  entry: JournalEntry;
 }
 
 interface TabPanelProps {
@@ -97,16 +97,18 @@ const DetailedEntry = ({ entry }: Props) => {
         <Box display="flex" justifyContent="space-evenly">
           <Typography variant="body1" color="textSecondary">
             Applied On:{" "}
-            {entry.appliedOn.getUTCDay().toString() +
+            {new Date(entry.appliedOn).getUTCDay().toString() +
               "-" +
-              entry.appliedOn.getUTCMonth().toString()}
+              new Date(entry.appliedOn).getUTCMonth().toString()}
           </Typography>
-          <Typography variant="body1" color="textSecondary">
-            FollowUp Date:{" "}
-            {entry.followUpDate?.getUTCDay().toString() +
-              "-" +
-              entry.followUpDate?.getUTCMonth().toString()}
-          </Typography>
+          {entry.followUpDate && (
+            <Typography variant="body1" color="textSecondary">
+              FollowUp Date:{" "}
+              {new Date(entry.followUpDate).getUTCDay().toString() +
+                "-" +
+                new Date(entry.followUpDate).getUTCMonth().toString()}
+            </Typography>
+          )}
         </Box>
 
         <Box>
@@ -136,15 +138,7 @@ const DetailedEntry = ({ entry }: Props) => {
             <TabPanel value={value} index={0}>
               {entry.details}
             </TabPanel>
-            <TabPanel value={value} index={1}>
-              {entry.contacts?.map((contact) => (
-                <>
-                  <Typography>{contact.name}</Typography>
-                  <Typography>{contact.email}</Typography>
-                  <Typography>{contact.phone}</Typography>
-                </>
-              ))}
-            </TabPanel>
+            <TabPanel value={value} index={1}></TabPanel>
             <TabPanel value={value} index={2}>
               {entry.notes || "No notes available"}
             </TabPanel>

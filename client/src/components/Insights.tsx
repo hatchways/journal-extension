@@ -1,69 +1,67 @@
-import React, { useState, useEffect } from "react";
-import { Box } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useEffect, useState } from "react";
 
-import EntryList from "./EntryList";
-import DetailedEntry from "./DetailedEntry";
+import { Box } from "@material-ui/core";
 import Charts from "../components/Charts";
-import { mockEntries } from "../mocks/mockEntries";
-import { JobEntry } from "../types/entry";
+import DetailedEntry from "./DetailedEntry";
+import EntryList from "./EntryList";
+import { JournalEntry } from "../store/journalEntries";
+import { makeStyles } from "@material-ui/core/styles";
+import { useAppSelector } from "../store";
 
 const useStyles = makeStyles(() => ({
-	rootContainer: {
-		height: "100vh",
-		padding: "0rem 2.5rem 1.75rem 2.5rem",
-	},
-	chartContainer: {
-		maxHeight: "45vh",
-		height: "100%",
+  rootContainer: {
+    height: "100vh",
+    padding: "0rem 2.5rem 1.75rem 2.5rem",
+  },
+  chartContainer: {
+    maxHeight: "45vh",
+    height: "100%",
     paddingBottom: "1.5rem",
-	},
-	listContainer: {
-		maxHeight: "50vh",
-		height: "100%",
-	},
+  },
+  listContainer: {
+    maxHeight: "50vh",
+    height: "100%",
+  },
 }));
 
 const Insights = () => {
-	const classes = useStyles();
-	const [activeEntryId, setActiveEntryId] = useState<number | undefined>(
-		undefined
-	);
-	const [activeDetailedEntry, setActiveDetailedEntry] = useState<
-		JobEntry | undefined
-	>(undefined);
+  const classes = useStyles();
+  const entries = useAppSelector((state) => state.journalEntries);
+  const [activeEntryId, setActiveEntryId] = useState<string | undefined>(
+    undefined
+  );
+  const [activeDetailedEntry, setActiveDetailedEntry] = useState<
+    JournalEntry | undefined
+  >(undefined);
 
-	useEffect(() => {
-		if (activeEntryId) {
-			const selectedEntry = mockEntries.filter(
-				(entry) => entry.id === activeEntryId
-			)[0];
-			setActiveDetailedEntry(selectedEntry);
-		}
-	}, [activeEntryId]);
+  useEffect(() => {
+    if (activeEntryId) {
+      const selectedEntry = entries.find(
+        (entry) => entry._id === activeEntryId
+      );
+      setActiveDetailedEntry(selectedEntry);
+    }
+  }, [activeEntryId, entries]);
 
-	return (
-		<Box
-			display="flex"
-			flexDirection="column"
-			className={classes.rootContainer}
-		>
-			<Box className={classes.chartContainer}>
-				<Charts entries={mockEntries} />
-			</Box>
-			<Box display="flex" className={classes.listContainer}>
-				<Box flex={2}>
-					<EntryList
-						entries={mockEntries}
-						setActiveEntryId={setActiveEntryId}
-					/>
-				</Box>
-				<Box flex={3} marginLeft={5}>
-					{activeDetailedEntry && <DetailedEntry entry={activeDetailedEntry} />}
-				</Box>
-			</Box>
-		</Box>
-	);
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      className={classes.rootContainer}
+    >
+      <Box className={classes.chartContainer}>
+        <Charts entries={entries} />
+      </Box>
+      <Box display="flex" className={classes.listContainer}>
+        <Box flex={2}>
+          <EntryList entries={entries} setActiveEntryId={setActiveEntryId} />
+        </Box>
+        <Box flex={3} marginLeft={5}>
+          {activeDetailedEntry && <DetailedEntry entry={activeDetailedEntry} />}
+        </Box>
+      </Box>
+    </Box>
+  );
 };
 
 export default Insights;
