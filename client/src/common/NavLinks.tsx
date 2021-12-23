@@ -63,7 +63,7 @@ const Navlinks = () => {
         component={Link}
         className={tab}
       />
-      {userId ? (
+      {userId && (
         <Tab
           label="Dashboard"
           disableRipple
@@ -72,25 +72,26 @@ const Navlinks = () => {
           component={Link}
           className={tab}
         />
-      ) : (
-        <>
-          <Tab
-            label="Login"
-            disableRipple
-            to="/login"
-            value="login"
-            component={Link}
-            className={tab}
-          />
-          <Tab
-            label="Signup"
-            disableRipple
-            to="/signup"
-            value="signup"
-            component={Link}
-            className={tab}
-          />
-        </>
+      )}
+      {!userId && (
+        <Tab
+          label="Login"
+          disableRipple
+          to="/login"
+          value="login"
+          component={Link}
+          className={tab}
+        />
+      )}
+      {!userId && (
+        <Tab
+          label="Signup"
+          disableRipple
+          to="/signup"
+          value="signup"
+          component={Link}
+          className={tab}
+        />
       )}
     </Tabs>
   );
