@@ -1,8 +1,10 @@
 //@23ts-nocheck
 
+import { Link, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { Tabs, Tab, makeStyles } from "@material-ui/core";
-import { useLocation, Link } from "react-router-dom";
+import { Tab, Tabs, makeStyles } from "@material-ui/core";
+
+import { useAppSelector } from "../store";
 
 //CSS styles
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Navlinks = () => {
   const [tabValue, setTabValue] = useState("");
+  const userId = useAppSelector((state) => state.user.id);
 
   const { tab, indicator, tabContainer } = useStyles();
   const location = useLocation();
@@ -60,22 +63,35 @@ const Navlinks = () => {
         component={Link}
         className={tab}
       />
-      <Tab
-        label="Login"
-        disableRipple
-        to="/login"
-        value="login"
-        component={Link}
-        className={tab}
-      />
-      <Tab
-        label="Signup"
-        disableRipple
-        to="/signup"
-        value="signup"
-        component={Link}
-        className={tab}
-      />
+      {userId ? (
+        <Tab
+          label="Dashboard"
+          disableRipple
+          to="/dashboard"
+          value="dashboard"
+          component={Link}
+          className={tab}
+        />
+      ) : (
+        <>
+          <Tab
+            label="Login"
+            disableRipple
+            to="/login"
+            value="login"
+            component={Link}
+            className={tab}
+          />
+          <Tab
+            label="Signup"
+            disableRipple
+            to="/signup"
+            value="signup"
+            component={Link}
+            className={tab}
+          />
+        </>
+      )}
     </Tabs>
   );
 };

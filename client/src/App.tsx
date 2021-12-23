@@ -1,36 +1,38 @@
-import React from "react";
-
-import MainLayout from "./common/MainLayout";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { store, useAppDispatch } from "./store";
 
-import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-
-import axios from "axios";
-// import { useAuth } from "./hooks/useAuth";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
+import MainLayout from "./common/MainLayout";
+import { Provider } from "react-redux";
 import Signup from "./pages/Signup";
+import { fetchUser } from "./store/thunks";
 
-axios.interceptors.request.use(async (req) => {
-	const savedToken = await localStorage.getItem("token");
-	if (savedToken) {
-		req.headers!.authorization = `Bearer ${savedToken}`;
-	}
-	return req;
-});
+function AutoLogin(): React.ReactElement {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
+
+  return <></>;
+}
 
 function App() {
-	// const { user } = useAuth();
-	return (
-		<MainLayout>
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/signup" element={<Signup />} />
-				<Route path="/dashboard" element={<Dashboard />} />
-			</Routes>
-		</MainLayout>
-	);
+  return (
+    <Provider store={store}>
+      <AutoLogin />
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </MainLayout>
+    </Provider>
+  );
 }
 
 export default App;

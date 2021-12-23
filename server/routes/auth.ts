@@ -42,7 +42,7 @@ authRouter.post("/signup", async (req, res, next) => {
     const token = await generateToken(user.id);
 
     res.send({
-      email,
+      id: user.id,
       token,
     });
   } catch (error) {
@@ -71,7 +71,7 @@ authRouter.post("/login", async (req, res, next) => {
     const token = await generateToken(user.id);
 
     res.send({
-      email,
+      id: user.id,
       token,
     });
   } catch (error) {

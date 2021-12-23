@@ -1,11 +1,13 @@
+import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Box, TextField, Grid, Button, Typography } from "@material-ui/core";
-import { useAuth } from "../hooks/useAuth";
+
+import { login } from "../store/thunks";
+import { useAppDispatch } from "../store";
+import { useNavigate } from "react-router";
 
 const Login = () => {
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [state, setState] = useState({
     email: "",
@@ -14,7 +16,7 @@ const Login = () => {
   });
   const handleLogin = async () => {
     try {
-      await login(state.email, state.password);
+      await dispatch(login({ email: state.email, password: state.password }));
       navigate("/");
     } catch (error) {
       setState((prev) => ({
@@ -29,11 +31,9 @@ const Login = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    console.log(name);
-    console.log(value);
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -83,7 +83,7 @@ const Login = () => {
           size="large"
           disabled={shouldDisableSubmit()}
         >
-          Signup
+          Login
         </Button>
       </Grid>
     </Box>
