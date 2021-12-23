@@ -1,4 +1,4 @@
-import { DATABASE_URL, PORT, SESSION_SECRET } from "./env";
+import { BACKEND_PORT, DATABASE_URL, SESSION_SECRET } from "./env";
 
 import { UserModel } from "./models/user";
 import { authRouter } from "./routes/auth";
@@ -38,8 +38,8 @@ app.use("/api/journal-entries", journalEntriesRouter);
 mongoose
   .connect(DATABASE_URL)
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Listening ${PORT}...`);
+    app.listen(BACKEND_PORT, () => {
+      console.log(`Listening ${BACKEND_PORT}...`);
     });
   })
   .catch((e) => {
