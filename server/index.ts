@@ -1,4 +1,4 @@
-import { BACKEND_PORT, DATABASE_URL, SESSION_SECRET } from "./env";
+import { DATABASE_URL, PORT, SESSION_SECRET } from "./env";
 
 import { UserModel } from "./models/user";
 import { authRouter } from "./routes/auth";
@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 const app = express();
 
 app.use(express.json());
+app.use(express.static("static"));
 app.use(function (req, _res, next) {
   const authorizationHeader = req.headers["authorization"];
   if (!authorizationHeader) {
@@ -34,12 +35,13 @@ app.use(function (req, _res, next) {
 
 app.use("/api", authRouter);
 app.use("/api/journal-entries", journalEntriesRouter);
+app.use("*", express.static("static/index.html"));
 
 mongoose
   .connect(DATABASE_URL)
   .then(() => {
-    app.listen(BACKEND_PORT, () => {
-      console.log(`Listening ${BACKEND_PORT}...`);
+    app.listen(PORT, () => {
+      console.log(`Listening ${PORT}...`);
     });
   })
   .catch((e) => {
