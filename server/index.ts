@@ -9,15 +9,21 @@ import mongoose from "mongoose";
 
 const app = express();
 
-app.use(function (req, res, next) {
-  const token = req.headers["x-access-token"];
+app.use(express.json());
+app.use(function (req, _res, next) {
+  const authorizationHeader = req.headers["authorization"];
+  if (!authorizationHeader) {
+    return next();
+  }
+
+  const token = authorizationHeader.split(" ")[1];
   if (typeof token === "string") {
     jwt.verify(token, SESSION_SECRET, (err, decoded) => {
       if (err || decoded === undefined) {
         return next();
       }
       UserModel.findById(decoded.id).then((user) => {
-        req.user = user;
+        req.userId = user?.id;
         return next();
       });
     });
@@ -26,11 +32,16 @@ app.use(function (req, res, next) {
   }
 });
 
-app.use("/", authRouter);
-app.use("/journal-entries", journalEntriesRouter);
+app.use("/api", authRouter);
+app.use("/api/journal-entries", journalEntriesRouter);
 
-mongoose.connect(DATABASE_URL).then(() => {
-  app.listen(PORT, () => {
-    console.log(`Listening ${PORT}...`);
+mongoose
+  .connect(DATABASE_URL)
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Listening ${PORT}...`);
+    });
+  })
+  .catch((e) => {
+    console.error(e);
   });
-});
