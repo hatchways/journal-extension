@@ -85,17 +85,19 @@ journalEntriesRouter.patch("/:id", async (req, res, next) => {
       return res.status(400).send({ message: parsed.error.message });
     }
 
-    const entry = await JournalEntryModel.findByIdAndUpdate(
-      req.params.id,
-      parsed.data,
-      { new: true }
-    );
+    const entry = await JournalEntryModel.findById(req.params.id);
 
     if (entry === null) {
       return res.sendStatus(404);
     }
+    if (!entry.user.equals(userId)) {
+      return res.sendStatus(403);
+    }
+    await JournalEntryModel.updateOne({ _id: req.params.id }, parsed.data);
+    const updated = await JournalEntryModel.findById(req.params.id);
+
     res.send({
-      journalEntry: entry,
+      journalEntry: updated,
     });
   } catch (error) {
     next(error);
@@ -109,11 +111,17 @@ journalEntriesRouter.delete("/:id", async (req, res, next) => {
       return res.sendStatus(401);
     }
 
-    const entry = await JournalEntryModel.findByIdAndDelete(req.params.id);
+    const entry = await JournalEntryModel.findById(req.params.id);
 
     if (entry === null) {
       return res.sendStatus(404);
     }
+    if (!entry.user.equals(userId)) {
+      return res.sendStatus(403);
+    }
+
+    await entry.delete();
+
     res.send({
       journalEntry: entry,
     });
