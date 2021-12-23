@@ -45,11 +45,11 @@ const createJournalEntrySchema = z.object({
   status: entryStatusSchema,
   location: z.string().optional(),
   appliedOn: z.string(),
-  notes: z.string(),
+  notes: z.string().optional(),
   details: z.string().optional(),
   followUpDate: z.string().optional(),
   hatchwaysApplicationId: z.string().optional(),
-  contacts: contactSchema.array(),
+  contacts: contactSchema.array().optional(),
 });
 
 journalEntriesRouter.post("/", async (req, res, next) => {

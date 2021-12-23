@@ -11,10 +11,10 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker } from "@material-ui/pickers";
-import { useForm } from 'react-hook-form';
 
 import CustomTextField from "./CustomTextField";
 import { STATUS_TYPE } from '../constants/constants';
+import createEntry from '../helpers/APICalls/createEntry';
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -53,18 +53,30 @@ const useStyles = makeStyles(() => ({
 }));
 
 const AddEntry = () => {
-	const [applicationDate, setApplicationDate] = useState< Date | null>(new Date());
-  const [followupDate, setFollowupDate] = useState< Date | null>(new Date());
-  const { register, handleSubmit } = useForm();
+  const [entryData, setEntryData] = useState({
+    companyName: "",
+    role: "",
+    location: "",
+    status: "",
+    details: "",
+
+  })
+	const [appliedOn, setAppliedOn] = useState< Date | null>(new Date());
+  const [followUpDate, setFollowUpDate] = useState< Date | null>(new Date());
   
 	const classes = useStyles();
 
-	const handleChange = () => {
-		console.log("change");
-	};
+	const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
+    property: string,
+    value?: string,
+  ) => {
+    setEntryData({ ...entryData, [property]: e.target.value });
+  }
 
-	const submitNewEntry = (data) => {
-		console.log(data);
+	const handleSubmit = (e) => {
+    e.preventDefault();
+    createEntry({...entryData, appliedOn, followUpDate})
 	};
 
 	return (
@@ -72,7 +84,7 @@ const AddEntry = () => {
 			<Typography variant="h4" component="h3" className={classes.formHeading}>
 				Job Role Details
 			</Typography>
-			<form onSubmit={handleSubmit((data) => submitNewEntry(data))} autoComplete="off">
+			<form onSubmit={handleSubmit}>
 				<Grid container>
 					<Grid container spacing={3} className={classes.formRow}>
 						<Grid item xs={12} sm={6}>
@@ -81,8 +93,10 @@ const AddEntry = () => {
 							</label>
 							<CustomTextField
 								id="company-name"
-								value={""}
-								onChange={handleChange}
+								value={entryData.companyName}
+								onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
+                  handleChange(e, 'companyName')
+                }
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
@@ -91,8 +105,10 @@ const AddEntry = () => {
 							</label>
 							<CustomTextField
 								id="job-role"
-								value={""}
-								onChange={handleChange}
+								value={entryData.role}
+								onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
+                  handleChange(e, 'role')
+                }
 							/>
 						</Grid>
 					</Grid>
@@ -104,8 +120,10 @@ const AddEntry = () => {
 							</label>
 							<CustomTextField
 								id="location"
-								value={""}
-								onChange={handleChange}
+								value={entryData.location}
+								onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
+                  handleChange(e, 'location')
+                }
 							/>
 						</Grid>
 						<Grid item xs={6} sm={4}>
@@ -113,10 +131,12 @@ const AddEntry = () => {
 								<label className={classes.label}>Job application status:</label>
 								<Select
 									classes={{ root: classes.selectRoot }}
-									value=''
+									value={entryData.status}
 									label="Status"
-									onChange={handleChange}
 									fullWidth
+                  onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
+                    handleChange(e, 'status')
+                  }
 								>
 									{STATUS_TYPE.map((status) => (
 										<MenuItem value={status}>{status}</MenuItem>
@@ -127,31 +147,33 @@ const AddEntry = () => {
 						<Grid item xs={6} sm={2} className={classes.dateColumn}>
 							<label className={classes.label}>Application Date:</label>
 							<DatePicker
-								value={applicationDate}
-								onChange={(value) => setApplicationDate(value)}
+								value={appliedOn}
+								onChange={(value) => setAppliedOn(value)}
 								inputVariant="outlined"
 							/>
 						</Grid>
 						<Grid item xs={6} sm={2} className={classes.dateColumn}>
 							<label className={classes.label}>Followup Date:</label>
 							<DatePicker
-								value={followupDate}
-								onChange={(value) => setFollowupDate(value)}
+								value={followUpDate}
+								onChange={(value) => setFollowUpDate(value)}
 								inputVariant="outlined"
 							/>
 						</Grid>
 					</Grid>
 
 					<Grid container className={classes.formRow}>
-						<label htmlFor="job-description" className={classes.label}>
+						<label htmlFor="details" className={classes.label}>
 							Job Description:
 						</label>
 						<CustomTextField
-							id="job-description"
-							value={""}
-							onChange={handleChange}
+							id="details"
+							value={entryData.details}
 							multiline={true}
 							rows={6}
+              onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
+                handleChange(e, 'details')
+              }
 						/>
 					</Grid>
 
@@ -164,6 +186,7 @@ const AddEntry = () => {
 
 					<Grid container justifyContent="center" className={classes.formRow}>
 						<Button
+              type="submit"
 							variant="contained"
 							color="primary"
 							size="large"
