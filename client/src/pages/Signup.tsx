@@ -1,11 +1,13 @@
+import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
 import React, { useState } from "react";
+
+import { signup } from "../store/thunks";
+import { useAppDispatch } from "../store";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Grid, Button, Typography } from "@material-ui/core";
-import { useAuth } from "../hooks/useAuth";
 
 const Signup = () => {
-  const { signup } = useAuth();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [state, setState] = useState({
     email: "",
@@ -16,7 +18,7 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      await signup(state.email, state.password);
+      await dispatch(signup({ email: state.email, password: state.password }));
       navigate("/");
     } catch (error) {
       setState((prev) => ({
@@ -34,7 +36,7 @@ const Signup = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setState((prev) => ({ ...prev, [name]: value }));

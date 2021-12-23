@@ -1,9 +1,8 @@
-// @ts-nocheck
-import React from "react";
-import { AppBar, Grid, makeStyles, Typography } from "@material-ui/core";
+import { AppBar, Grid, Typography, makeStyles } from "@material-ui/core";
 
 import NavLinks from "./NavLinks";
-import { useAuth } from "../hooks/useAuth";
+// @ts-nocheck
+import React from "react";
 import { Theme } from "@mui/material";
 
 //CSS styles
@@ -24,8 +23,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Navbar = () => {
   const { navbar, navbarHeight } = useStyles();
-
-  const { user, logout } = useAuth();
 
   return (
     <>
