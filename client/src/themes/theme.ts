@@ -16,7 +16,7 @@ export const theme = createTheme({
     },
     body1: {
       fontSize: "0.9rem",
-      fontWeight: 700,
+      fontWeight: 400,
     },
     button: {
       fontWeight: 700,
@@ -31,7 +31,7 @@ export const theme = createTheme({
     secondary: { main: "#FFFFFF" },
     contrastThreshold: 2,
     background: {
-      default: "#f4f6fc", //background body
+      default: "#f8faff", //background body
     },
   },
   shadows: [
