@@ -15,6 +15,6 @@ export interface JobEntry {
 	appliedOn: Date;
 	notes: string;
 	contacts?: Contact[];
-	details?;
+	details?: string;
 	followUpDate?: Date;
 }

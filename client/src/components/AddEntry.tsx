@@ -13,8 +13,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker } from "@material-ui/pickers";
 
 import CustomTextField from "./CustomTextField";
-import { STATUS_TYPE } from '../constants/constants';
-import createEntry from '../helpers/APICalls/createEntry';
+import { STATUS_TYPE } from "../constants/constants";
+import createEntry from "../helpers/APICalls/createEntry";
+import { useSnackBar } from "../hooks/useSnackbar";
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -52,31 +53,47 @@ const useStyles = makeStyles(() => ({
 	},
 }));
 
-const AddEntry = () => {
-  const [entryData, setEntryData] = useState({
-    companyName: "",
-    role: "",
-    location: "",
-    status: "",
-    details: "",
+const INITIAL_STATE = {
+	companyName: "",
+	role: "",
+	location: "",
+	status: "",
+	details: "",
+	notes: "",
+};
 
-  })
-	const [appliedOn, setAppliedOn] = useState< Date | null>(new Date());
-  const [followUpDate, setFollowUpDate] = useState< Date | null>(new Date());
-  
+const AddEntry = () => {
+	const [entryData, setEntryData] = useState(INITIAL_STATE);
+	const [appliedOn, setAppliedOn] = useState<Date | null>(new Date());
+	const [followUpDate, setFollowUpDate] = useState<Date | null>(new Date());
+	const { updateSnackBarMessage } = useSnackBar();
 	const classes = useStyles();
 
 	const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
-    property: string,
-    value?: string,
-  ) => {
-    setEntryData({ ...entryData, [property]: e.target.value });
-  }
+		e:
+			| React.ChangeEvent<HTMLInputElement>
+			| React.ChangeEvent<HTMLTextAreaElement>,
+		property: string,
+		value?: string
+	) => {
+		setEntryData({ ...entryData, [property]: e.target.value });
+	};
 
-	const handleSubmit = (e) => {
-    e.preventDefault();
-    createEntry({...entryData, appliedOn, followUpDate})
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+    try {
+      const res = await createEntry({ ...entryData, appliedOn, followUpDate });
+
+      if (res.status !== 200) {
+        updateSnackBarMessage("An unexpected error has occured");
+      } else {
+        updateSnackBarMessage("Succesfully created a new entry!");
+        setEntryData(INITIAL_STATE);
+      }
+    }
+    catch (error) {
+      updateSnackBarMessage(error.message);
+    }
 	};
 
 	return (
@@ -94,9 +111,11 @@ const AddEntry = () => {
 							<CustomTextField
 								id="company-name"
 								value={entryData.companyName}
-								onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
-                  handleChange(e, 'companyName')
-                }
+								onChange={(
+									e:
+										| React.ChangeEvent<HTMLInputElement>
+										| React.ChangeEvent<HTMLTextAreaElement>
+								): void => handleChange(e, "companyName")}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
@@ -106,9 +125,11 @@ const AddEntry = () => {
 							<CustomTextField
 								id="job-role"
 								value={entryData.role}
-								onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
-                  handleChange(e, 'role')
-                }
+								onChange={(
+									e:
+										| React.ChangeEvent<HTMLInputElement>
+										| React.ChangeEvent<HTMLTextAreaElement>
+								): void => handleChange(e, "role")}
 							/>
 						</Grid>
 					</Grid>
@@ -121,9 +142,11 @@ const AddEntry = () => {
 							<CustomTextField
 								id="location"
 								value={entryData.location}
-								onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
-                  handleChange(e, 'location')
-                }
+								onChange={(
+									e:
+										| React.ChangeEvent<HTMLInputElement>
+										| React.ChangeEvent<HTMLTextAreaElement>
+								): void => handleChange(e, "location")}
 							/>
 						</Grid>
 						<Grid item xs={6} sm={4}>
@@ -134,9 +157,11 @@ const AddEntry = () => {
 									value={entryData.status}
 									label="Status"
 									fullWidth
-                  onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
-                    handleChange(e, 'status')
-                  }
+									onChange={(
+										e:
+											| React.ChangeEvent<HTMLInputElement>
+											| React.ChangeEvent<HTMLTextAreaElement>
+									): void => handleChange(e, "status")}
 								>
 									{STATUS_TYPE.map((status) => (
 										<MenuItem value={status}>{status}</MenuItem>
@@ -171,9 +196,28 @@ const AddEntry = () => {
 							value={entryData.details}
 							multiline={true}
 							rows={6}
-              onChange={(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void =>
-                handleChange(e, 'details')
-              }
+							onChange={(
+								e:
+									| React.ChangeEvent<HTMLInputElement>
+									| React.ChangeEvent<HTMLTextAreaElement>
+							): void => handleChange(e, "details")}
+						/>
+					</Grid>
+
+					<Grid container className={classes.formRow}>
+						<label htmlFor="notes" className={classes.label}>
+							Additional Notes:
+						</label>
+						<CustomTextField
+							id="notes"
+							value={entryData.notes}
+							multiline={true}
+							rows={3}
+							onChange={(
+								e:
+									| React.ChangeEvent<HTMLInputElement>
+									| React.ChangeEvent<HTMLTextAreaElement>
+							): void => handleChange(e, "notes")}
 						/>
 					</Grid>
 
@@ -186,7 +230,7 @@ const AddEntry = () => {
 
 					<Grid container justifyContent="center" className={classes.formRow}>
 						<Button
-              type="submit"
+							type="submit"
 							variant="contained"
 							color="primary"
 							size="large"
