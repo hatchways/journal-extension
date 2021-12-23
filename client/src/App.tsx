@@ -4,6 +4,7 @@ import { fetchJournalEntries, fetchUser } from "./store/thunks";
 import { store, useAppDispatch } from "./store";
 
 import Dashboard from "./pages/Dashboard";
+import HatchwaysIntegration from "./pages/HatchwaysIntegration";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MainLayout from "./common/MainLayout";
@@ -30,6 +31,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/hatchways" element={<HatchwaysIntegration />} />
         </Routes>
       </MainLayout>
     </Provider>

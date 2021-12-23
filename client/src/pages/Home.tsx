@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@material-ui/core";
 import { useAppDispatch, useAppSelector } from "../store";
 
+import { Link } from "react-router-dom";
 import { logout } from "../store/thunks";
 
 const Home = () => {
@@ -15,6 +16,7 @@ const Home = () => {
           <Button variant="contained" onClick={() => dispatch(logout())}>
             Logout
           </Button>
+          <Link to={"/hatchways"}>Connect to Hatchways</Link>
         </>
       ) : (
         <Typography>Not logged in</Typography>
